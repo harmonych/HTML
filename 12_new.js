@@ -98,18 +98,13 @@ function createCartList(itemKey, itemValue){
 function deleteItem(){
 	//先找到要刪除物品的id 
 	var itemId = this.parentNode.getAttribute('id');
+	//檢查該品項個數
+	var q = this.parentNode.nextSibling.nextSibling.firstChild.value;
+	//從subtotal上扣掉欲刪除物品的金額*個數。
+	var itemValue = storage[itemId];
+	subtotal -= parseInt(itemValue.split('|')[2])*q;	
 	
-	//從subtotal上扣掉欲刪除物品的金額並作subtotal剩餘金額檢定。
-	if (document.getElementById('subtotal').innerText.value>0){
-		var itemValue = storage[itemId];
-		subtotal -= parseInt(itemValue.split('|')[2]);
-		
-		document.getElementById('subtotal').innerText = subtotal;
-	}else{
-		if(document.getElementById('subtotal').innerText.value<0){
-			document.getElementById('subtotal').innerText.value = 0;
-		}
-	}
+	document.getElementById('subtotal').innerText = subtotal;
 	//清除storage內該物品的資料
 	
 	storage['addItemList'] = storage['addItemList'].replace(itemId+', ' , '');
@@ -125,14 +120,8 @@ function changeItemCount(){
 	var unitPrice = storage[itemId].split('|')[2];
 	var oPrice = this.parentNode.previousSibling.innerText;
 	this.parentNode.previousSibling.innerText = unitPrice * q;
-	subtotal +=((unitPrice * q)-oPrice);
-	
+	subtotal += ((unitPrice * q)-oPrice);
 	document.getElementById('subtotal').innerText = subtotal;
-	console.log(q);
-	console.log(itemId);
-	console.log(unitPrice);
-	console.log(oPrice);
-	
 	
 }
 window.addEventListener('load', doFirst, false);
