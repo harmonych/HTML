@@ -24,10 +24,11 @@ td{
 #cartList{
     font-size: medium;
     font-weight: 800;
-	border-bottom: 1px solid #aaa;
+	border-bottom: 1px solid teal;
 }
 #subtotal{
     font-size: medium;
     font-weight: 600;
     color: Maroon;
+	padding-right:310px;
 }

@@ -9,7 +9,6 @@ function doFirst(){
 	
 	for (var key in items){ // use item[key]
         var itemInfo = storage[items[key]];
-        //   var itemInfo = storage.getItem(items[key]);
         createCartList(items[key], itemInfo);
 	}
 	newItem.appendChild(newTable);
@@ -89,24 +88,22 @@ function createCartList(itemKey, itemValue){
 	
 	//建立商品數量*單品金額的金額
 	tdPrice.innerText = itemPrice*itemCount.value;
-	
-	
-	
 	tdItemCount.appendChild(itemCount);
 	trItemList.appendChild(tdItemCount);
 }
 function deleteItem(){
 	//先找到要刪除物品的id 
 	var itemId = this.parentNode.getAttribute('id');
+	
 	//檢查該品項個數
 	var q = this.parentNode.nextSibling.nextSibling.firstChild.value;
+	
 	//從subtotal上扣掉欲刪除物品的金額*個數。
 	var itemValue = storage[itemId];
 	subtotal -= parseInt(itemValue.split('|')[2])*q;	
-	
 	document.getElementById('subtotal').innerText = subtotal;
-	//清除storage內該物品的資料
 	
+	//清除storage內該物品的資料
 	storage['addItemList'] = storage['addItemList'].replace(itemId+', ' , '');
 	storage.removeItem(itemId);
 	
