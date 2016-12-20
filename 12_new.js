@@ -85,7 +85,7 @@ function createCartList(itemKey, itemValue){
 	itemCount.type = 'number';
 	itemCount.value = 1;
 	itemCount.min = 0;
-	itemCount.oninput = changeItemCount(itemCount);
+	itemCount.oninput = changeItemCount;
 	
 	//建立商品數量*單品金額的金額
 	tdPrice.innerText = itemPrice*itemCount.value;
@@ -99,12 +99,17 @@ function deleteItem(){
 	//先找到要刪除物品的id 
 	var itemId = this.parentNode.getAttribute('id');
 	
-	//從subtotal上扣掉欲刪除物品的金額。
-	var itemValue = storage[itemId];
-	subtotal -= parseInt(itemValue.split('|')[2]);
-	
-	document.getElementById('subtotal').innerText = subtotal;
-	
+	//從subtotal上扣掉欲刪除物品的金額並作subtotal剩餘金額檢定。
+	if (document.getElementById('subtotal').innerText.value>0){
+		var itemValue = storage[itemId];
+		subtotal -= parseInt(itemValue.split('|')[2]);
+		
+		document.getElementById('subtotal').innerText = subtotal;
+	}else{
+		if(document.getElementById('subtotal').innerText.value<0){
+			document.getElementById('subtotal').innerText.value = 0;
+		}
+	}
 	//清除storage內該物品的資料
 	
 	storage['addItemList'] = storage['addItemList'].replace(itemId+', ' , '');
@@ -114,19 +119,20 @@ function deleteItem(){
 	this.parentNode.parentNode.parentNode.removeChild(this.parentNode.parentNode);
 	
 }
-function changeItemCount(itemCount){
-	var n = this.value;
-	var theId = this.parentNode.previousSibling.previousSibling.id;
-	var oldPrice = this.parentNode.previousSibling.innerText;
+function changeItemCount(){
+	var q = this.value;
+	var itemId = this.parentNode.previousSibling.previousSibling.getAttribute('id');
+	var unitPrice = storage[itemId].split('|')[2];
+	var oPrice = this.parentNode.previousSibling.innerText;
+	this.parentNode.previousSibling.innerText = unitPrice * q;
+	subtotal +=((unitPrice * q)-oPrice);
 	
-	var unitPrice = storage[theId].split('|')[2];
-	this.parentNode.previousSibling.innerText = n * unitPrice
-	var newPrice = unitPrice*n;
-	subtotal = subtotal-oldPrice+newPrice;
-	console.log(oldPrice);
-	console.log(newPrice);
-	console.log(subtotal);
 	document.getElementById('subtotal').innerText = subtotal;
+	console.log(q);
+	console.log(itemId);
+	console.log(unitPrice);
+	console.log(oPrice);
+	
 	
 }
 window.addEventListener('load', doFirst, false);
